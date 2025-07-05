@@ -7,12 +7,18 @@ dotenv.config()
 
 const app = express()
 
-// CORS setup: allow specific frontend origin
+// ✅ CORS setup
 app.use(cors({
-  origin: process.env.FRONTEND_ORIGIN || '*', // fallback to allow all if not set
+  origin: process.env.FRONTEND_ORIGIN || 'https://growth-proai.vercel.app',
+  credentials: true,
+  methods: ['GET', 'POST'],
+  allowedHeaders: ['Content-Type'],
 }))
 
+app.options('*', cors()) // Preflight support
+
 app.use(express.json())
+
 
 // Replace placeholders in template
 const generateHeadline = (name, location) => {
