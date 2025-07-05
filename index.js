@@ -25,3 +25,19 @@ app.post('/business-data', (req, res) => {
 
   res.json({ rating, reviews, headline });
 });
+
+// GET /regenerate-headline
+app.get('/regenerate-headline', (req, res) => {
+  const { name, location } = req.query;
+
+  if (!name || !location) {
+    return res.status(400).json({ error: 'Name and location are required' });
+  }
+
+  const headline = generateHeadline(name, location);
+  res.json({ headline });
+});
+
+app.listen(PORT, () => {
+  console.log(`Backend running at http://localhost:${PORT}`);
+});
