@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import Loader from "./componets/Loader/Loader";
+import Switch from "./componets/Switch/Switch";
+// Importing GSAP for animations
 import gsap from "gsap";
 import "./index.css";
 
@@ -7,7 +9,6 @@ function App() {
   const [form, setForm] = useState({ name: "", location: "" });
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [regenerating, setRegenerating] = useState(false); // NEW
   const [darkMode, setDarkMode] = useState(() => {
     if (localStorage.theme === "dark") return true;
     if (
@@ -74,7 +75,7 @@ function App() {
   };
 
   const regenerateHeadline = async () => {
-    setRegenerating(true);
+    setLoading(true); // loader while regenerating
     try {
       const res = await fetch(
         `${import.meta.env.VITE_API_URL}/regenerate-headline?name=${form.name}&location=${form.location}`
@@ -82,22 +83,19 @@ function App() {
       const result = await res.json();
       setData((prev) => ({ ...prev, headline: result.headline }));
     } catch (error) {
-      console.error("Headline regeneration error:", error);
+      console.error("API Error:", error);
     }
-    setRegenerating(false);
+    setLoading(false);
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-black text-gray-900 dark:text-white p-4 transition-colors duration-300">
-      <div className="w-full max-w-md bg-gray-200 dark:bg-gray-800 p-6 rounded-xl shadow-lg">
+      <div className="w-full max-w-md bg-blue-200 dark:bg-gray-800 p-6 rounded-xl shadow-lg">
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-2xl font-bold">Local Business Dashboard</h1>
-          <button
-            onClick={() => setDarkMode((prev) => !prev)}
-            className="text-sm px-3 py-1 rounded border bg-gray-800 text-white hover:bg-gray-700 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-200 transition"
-          >
-            {darkMode ? "☀️ Light" : "🌙 Dark"}
-          </button>
+          <div onClick={() => setDarkMode((prev) => !prev)} className="cursor-pointer">
+           <Switch darkMode={darkMode} onToggle={() => setDarkMode(prev => !prev)} />
+          </div>
         </div>
 
         <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
@@ -133,7 +131,7 @@ function App() {
           </div>
           <button
             type="submit"
-            className="w-full bg-gray-800 text-white py-2 rounded hover:bg-gray-700 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-200 transition"
+            className="w-full bg-gray-800 text-white py-2 rounded hover:bg-gray-700 dark:bg-blue-300 dark:text-gray-900 dark:hover:bg-gray-200 transition"
           >
             Submit
           </button>
@@ -152,17 +150,7 @@ function App() {
               <p className="text-md">
                 <strong>💬 Reviews:</strong> {data.reviews}
               </p>
-
-              {regenerating ? (
-                <p className="italic mt-2 animate-pulse text-sm text-gray-500 dark:text-gray-300">
-                  Regenerating headline...
-                </p>
-              ) : (
-                <p ref={cardRef} className="italic mt-2">
-                  "{data.headline}"
-                </p>
-              )}
-
+              <p ref={cardRef} className="italic mt-2">"{data.headline}"</p>
               <button
                 onClick={regenerateHeadline}
                 className="mt-4 w-full bg-gray-800 text-white py-2 rounded hover:bg-gray-700 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-200 transition"
