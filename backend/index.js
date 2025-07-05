@@ -9,7 +9,12 @@ app.use(cors());
 app.use(express.json());
 
 
-
+// Replace template placeholders
+const generateHeadline = (name, location) => {
+  const randomIndex = Math.floor(Math.random() * headlineTemplates.length);
+  const template = headlineTemplates[randomIndex];
+  return template.replace(/{name}/g, name).replace(/{location}/g, location);
+};
 
 // POST /business-data
 app.post('/business-data', (req, res) => {
