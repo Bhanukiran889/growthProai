@@ -9,7 +9,6 @@ const app = express()
 
 const allowedOrigin = 'https://growth-proai.vercel.app'
 
-// ✅ Handle CORS with dynamic header and credentials false
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', allowedOrigin)
   res.header('Access-Control-Allow-Methods', 'GET,POST')
@@ -26,14 +25,14 @@ app.use(cors({
 
 app.use(express.json())
 
-// ✅ Generate headline
+// Generate headline
 const generateHeadline = (name, location) => {
   const randomIndex = Math.floor(Math.random() * headlineTemplates.length)
   const template = headlineTemplates[randomIndex]
   return template.replace(/{name}/g, name).replace(/{location}/g, location)
 }
 
-// ✅ POST /business-data
+//  POST /business-data
 app.post('/business-data', (req, res) => {
   const { name, location } = req.body
 
@@ -48,7 +47,7 @@ app.post('/business-data', (req, res) => {
   res.json({ rating, reviews, headline })
 })
 
-// ✅ GET /regenerate-headline
+// GET /regenerate-headline
 app.get('/regenerate-headline', (req, res) => {
   const { name, location } = req.query
 
@@ -60,8 +59,8 @@ app.get('/regenerate-headline', (req, res) => {
   res.json({ headline })
 })
 
-// ✅ Start server
+//  Start server
 const port = process.env.PORT || 5000
 app.listen(port, () => {
-  console.log(`✅ Server running on port ${port}`)
+  console.log(`Server running on port ${port}`)
 })

@@ -7,6 +7,7 @@ function App() {
   const [form, setForm] = useState({ name: "", location: "" });
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [regenerating, setRegenerating] = useState(false); // NEW
   const [darkMode, setDarkMode] = useState(() => {
     if (localStorage.theme === "dark") return true;
     if (
@@ -73,13 +74,17 @@ function App() {
   };
 
   const regenerateHeadline = async () => {
-    const res = await fetch(
-      `${import.meta.env.VITE_API_URL}/regenerate-headline?name=${
-        form.name
-      }&location=${form.location}`
-    );
-    const result = await res.json();
-    setData((prev) => ({ ...prev, headline: result.headline }));
+    setRegenerating(true);
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/regenerate-headline?name=${form.name}&location=${form.location}`
+      );
+      const result = await res.json();
+      setData((prev) => ({ ...prev, headline: result.headline }));
+    } catch (error) {
+      console.error("Headline regeneration error:", error);
+    }
+    setRegenerating(false);
   };
 
   return (
@@ -140,16 +145,24 @@ function App() {
           </div>
         ) : (
           data && (
-            <div
-              className="mt-6 p-4 rounded-lg bg-gray-200 dark:bg-gray-700 shadow"
-            >
+            <div className="mt-6 p-4 rounded-lg bg-gray-200 dark:bg-gray-700 shadow">
               <p className="text-md">
                 <strong>⭐ Rating:</strong> {data.rating}
               </p>
               <p className="text-md">
                 <strong>💬 Reviews:</strong> {data.reviews}
               </p>
-              <p ref={cardRef} className="italic mt-2">"{data.headline}"</p>
+
+              {regenerating ? (
+                <p className="italic mt-2 animate-pulse text-sm text-gray-500 dark:text-gray-300">
+                  Regenerating headline...
+                </p>
+              ) : (
+                <p ref={cardRef} className="italic mt-2">
+                  "{data.headline}"
+                </p>
+              )}
+
               <button
                 onClick={regenerateHeadline}
                 className="mt-4 w-full bg-gray-800 text-white py-2 rounded hover:bg-gray-700 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-200 transition"
