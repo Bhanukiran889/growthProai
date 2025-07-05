@@ -53,7 +53,7 @@ function App() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     setLoading(true)
-    const res = await fetch('http://localhost:5000/business-data', {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/business-data`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(form),
@@ -65,7 +65,7 @@ function App() {
 
   const regenerateHeadline = async () => {
     const res = await fetch(
-      `http://localhost:5000/regenerate-headline?name=${form.name}&location=${form.location}`
+      `${import.meta.env.VITE_API_URL}/regenerate-headline?name=${form.name}&location=${form.location}`
     )
     const result = await res.json()
     setData((prev) => ({ ...prev, headline: result.headline }))
