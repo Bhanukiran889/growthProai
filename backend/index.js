@@ -7,9 +7,23 @@ dotenv.config()
 
 const app = express()
 
-// CORS setup: allow specific frontend origin
+// Safely handle CORS: remove quotes, handle dev/prod
+const allowedOrigins = [
+  process.env.FRONTEND_ORIGIN?.replace(/['"]/g, ''), // Remove quotes if any
+  'http://localhost:5173', // Add dev client if needed
+].filter(Boolean)
+
 app.use(cors({
-  origin: process.env.FRONTEND_ORIGIN || '*',
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl)
+    if (!origin) return callback(null, true)
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true)
+    } else {
+      return callback(new Error('Not allowed by CORS'))
+    }
+  },
+  credentials: true,
 }))
 
 app.use(express.json())
