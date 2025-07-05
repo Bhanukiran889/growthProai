@@ -9,6 +9,7 @@ function App() {
   const [form, setForm] = useState({ name: "", location: "" });
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [regenerating, setRegenerating] = useState(false);
   const [darkMode, setDarkMode] = useState(() => {
     if (localStorage.theme === "dark") return true;
     if (
@@ -75,7 +76,7 @@ function App() {
   };
 
   const regenerateHeadline = async () => {
-    setLoading(true); // loader while regenerating
+    setRegenerating(true);
     try {
       const res = await fetch(
         `${import.meta.env.VITE_API_URL}/regenerate-headline?name=${form.name}&location=${form.location}`
@@ -83,9 +84,9 @@ function App() {
       const result = await res.json();
       setData((prev) => ({ ...prev, headline: result.headline }));
     } catch (error) {
-      console.error("API Error:", error);
+      console.error("Headline regeneration error:", error);
     }
-    setLoading(false);
+    setRegenerating(false);
   };
 
   return (
@@ -93,16 +94,12 @@ function App() {
       <div className="w-full max-w-md bg-blue-200 dark:bg-gray-800 p-6 rounded-xl shadow-lg">
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-2xl font-bold">Local Business Dashboard</h1>
-          <div onClick={() => setDarkMode((prev) => !prev)} className="cursor-pointer">
-           <Switch darkMode={darkMode} onToggle={() => setDarkMode(prev => !prev)} />
-          </div>
+          <Switch darkMode={darkMode} onToggle={() => setDarkMode(prev => !prev)} />
         </div>
 
         <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="name" className="block mb-1">
-              Business Name
-            </label>
+            <label htmlFor="name" className="block mb-1">Business Name</label>
             <input
               id="name"
               type="text"
@@ -115,9 +112,7 @@ function App() {
             />
           </div>
           <div>
-            <label htmlFor="location" className="block mb-1">
-              Location
-            </label>
+            <label htmlFor="location" className="block mb-1">Location</label>
             <input
               id="location"
               type="text"
@@ -150,10 +145,18 @@ function App() {
               <p className="text-md">
                 <strong>💬 Reviews:</strong> {data.reviews}
               </p>
-              <p ref={cardRef} className="italic mt-2">"{data.headline}"</p>
+              {regenerating ? (
+                <p className="italic mt-2 animate-pulse text-sm text-gray-500 dark:text-gray-300">
+                  Regenerating headline...
+                </p>
+              ) : (
+                <p ref={cardRef} className="italic mt-2">
+                  "{data.headline}"
+                </p>
+              )}
               <button
                 onClick={regenerateHeadline}
-                className="mt-4 w-full bg-gray-800 text-white py-2 rounded hover:bg-gray-700 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-200 transition"
+                className="mt-4 w-full bg-gray-800 text-white py-2 rounded hover:bg-gray-700 dark:bg-blue-200 dark:text-gray-900 dark:hover:bg-gray-200 transition"
               >
                 Regenerate SEO Headline
               </button>
