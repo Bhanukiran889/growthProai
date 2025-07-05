@@ -140,10 +140,10 @@ function App() {
           data && (
             <div className="mt-6 p-4 rounded-lg bg-gray-200 dark:bg-gray-700 shadow">
               <p className="text-md">
-                <strong>⭐ Rating:</strong> {data.rating}
+                <strong>Rating:</strong> {data.rating}
               </p>
               <p className="text-md">
-                <strong>💬 Reviews:</strong> {data.reviews}
+                <strong>Reviews:</strong> {data.reviews}
               </p>
               {regenerating ? (
                 <p className="italic mt-2 animate-pulse text-sm text-gray-500 dark:text-gray-300">
