@@ -43,25 +43,7 @@
 
 ---
 
-## 📁 Folder Structure
 
-growthProAI/
-│
-├── backend/
-│ ├── index.js # Express backend server
-│ ├── headlines.js # Array of headline templates
-│ └── .env # Backend environment config
-│
-├── frontend/
-│ ├── src/
-│ │ ├── components/
-│ │ │ └── Loader/ # Custom Tailwind-based SVG loader
-│ │ ├── App.jsx # Main frontend logic
-│ │ └── index.css # Tailwind styles
-│ └── .env # Frontend environment config
-
-
----
 
 ## 🧠 How It Works
 
