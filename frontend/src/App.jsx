@@ -96,7 +96,7 @@ function App() {
             onClick={() => setDarkMode((prev) => !prev)}
             className="text-sm px-3 py-1 rounded border bg-gray-800 text-white hover:bg-gray-700 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-200 transition"
           >
-            {darkMode ? "☀️" : "🌙"}
+            {darkMode ? "☀️ Light" : "🌙 Dark"}
           </button>
         </div>
 
