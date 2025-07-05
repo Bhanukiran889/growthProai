@@ -81,8 +81,9 @@ Response:
   "headline": "Top-rated Cake & Co in Mumbai – Loved by Locals!"
 }
 
+---
 
-GET /regenerate-headline
+### GET /regenerate-headline
 GET /regenerate-headline?name=Cake%20%26%20Co&location=Mumbai
 
 
