@@ -32,7 +32,7 @@ function App() {
 
       const timer = setTimeout(() => {
         setColdStartNotice(false);
-      }, 5000);
+      }, 15000);
 
       return () => clearTimeout(timer);
     }
@@ -193,7 +193,7 @@ function App() {
         )}
       </div>
     </div>
-    
+
   );
 }
 
