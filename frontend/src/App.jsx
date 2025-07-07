@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import Loader from "./componets/Loader/Loader";
 import Switch from "./componets/Switch/Switch";
-// Importing GSAP for animations
 import gsap from "gsap";
 import "./index.css";
 
@@ -10,6 +9,7 @@ function App() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [regenerating, setRegenerating] = useState(false);
+  const [coldStartNotice, setColdStartNotice] = useState(false);
   const [darkMode, setDarkMode] = useState(() => {
     if (localStorage.theme === "dark") return true;
     if (
@@ -22,6 +22,21 @@ function App() {
 
   const formRef = useRef(null);
   const cardRef = useRef(null);
+
+  useEffect(() => {
+    // Show cold start notice only once per session
+    const hasSeenNotice = sessionStorage.getItem("coldStartSeen");
+    if (!hasSeenNotice) {
+      setColdStartNotice(true);
+      sessionStorage.setItem("coldStartSeen", "true");
+
+      const timer = setTimeout(() => {
+        setColdStartNotice(false);
+      }, 5000);
+
+      return () => clearTimeout(timer);
+    }
+  }, []);
 
   useEffect(() => {
     if (darkMode) {
@@ -97,6 +112,19 @@ function App() {
           <Switch darkMode={darkMode} onToggle={() => setDarkMode(prev => !prev)} />
         </div>
 
+        {/* Cold start alert */}
+        {coldStartNotice && (
+          <div className="mb-4 p-3 rounded bg-yellow-100 text-yellow-800 text-sm shadow flex justify-between items-start">
+            <span>⏳ Note: Server may take a few seconds to respond due to cold start on Render.</span>
+            <button
+              className="ml-4 text-yellow-900 hover:text-red-600 font-bold"
+              onClick={() => setColdStartNotice(false)}
+            >
+              ✖
+            </button>
+          </div>
+        )}
+
         <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label htmlFor="name" className="block mb-1">Business Name</label>
@@ -165,6 +193,7 @@ function App() {
         )}
       </div>
     </div>
+    
   );
 }
 
